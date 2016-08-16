@@ -1,71 +1,93 @@
-Make a DataBase
+#Make a DataBase
 
-(1)Npm init
-	-makes your package.json file
+##(1) ```npm init```
 
-(2)Npm initstall
-	-make node_modules
+	makes your package.json file
 
-(3)npm install gitignore -g (if you don't have gitignore installed globally)
-  	Gitignore node
-		  -makes a .gitignore file
+##(2)```npm install```
 
-ADD DEPENDENCIES Knex, pg dotenv
+	make node_modules
 
-(4)npm install knex pg dotenv  --save
-  -Installs dotenv module and adds to the dependencies in package.json(this loads the environment variables)Installs pg and knex and add them to the dependencies in the package.json
+##(3) ```npm install gitignore``` or ```npm install gitignore -g``` (if you don't have gitignore installed globally)
 
-(5)Knex init
-	-Creates knexfile.js
+		makes a .gitignore file
 
-(6)Git init
-  -Initialize git repo
+#ADD DEPENDENCIES knex, pg dotenv
 
-(7)Echo node_modules > .gitignore
-		-moves node modules to a .gitignore file
+##(4)```npm install knex pg dotenv  --save```
 
-(8)Touch .env 	 
-	-Makes a empty .env file in the root directory
+  Installs dotenv module and adds to the dependencies in ```package.json```(this loads the environment variables)Installs ```pg``` and ```knex``` and add them to the dependencies in the ```package.json```
 
-(9)echo .env >> .gitignore
-		-adds .env file to .gitignore so git doesn't track it
+##(5)```knex init```
 
-(10)Atom .
-	-open atom
+	Creates ```knexfile.js```
 
-(11)Change knexfile.js
-  require('dotenv').config();
-  module.exports = {
-    development: {
-      client: 'pg',
-        connection: 'postgres://localhost/DATABASE_NAME'
+##(6)```git init```
+
+  Initialize git repo
+
+##(7)```echo node_modules > .gitignore```
+
+		moves node modules to a ```.gitignore``` file
+
+##(8)```touch .env``` 	 
+
+	Makes a empty ```.env``` file in the root directory
+
+##(9)```echo .env >> .gitignore```
+
+		adds ```.env``` file to ```.gitignore``` so git doesn't track it
+
+##(10)```atom .```
+
+	opens atom if you're using Atom
+
+##(11)Change knexfile.js
+
+	```
+	require('dotenv').config();
+  		module.exports = {
+    	development: {
+      	client: 'pg',
+        connection: 		'postgres://localhost/DATABASE_NAME'
         },
       production:{
       	client: 'pg',
       	connection: process.env.DATABASE_URL + '?ssl=true'
       	}
-    };
+    }
+		```
+##(12)Create directory called db
+	```
+	touch db
+	```
 
-(12)Create directory called db
+##(13)Makefile knex.js
 
-(13)Makefile knex.js
-	-Add to knex.js
+	Add to ```knex.js```
+		```
 		var environment = process.env.NODE_ENV || 'development';
     var config = require('../knexfile')[environment];
     var knex = require('knex')(config);
     module.exports= knex;
+		```
 
+#SETTING UP DATABASE POSTGRES DATABASE
 
-SETTING UP DATABASE POSTGRES DATABASE
+##(1)Open Terminal
 
-(1)Open Terminal
+	If you have postgresql installed continue to step 2, if not visit [here](https://www.moncefbelyamani.com/how-to-install-postgresql-on-a-mac-with-homebrew-and-lunchy/) to see how to install on it with homebrew.
 
-(2)Createdb db_name (name you want the database to be)
-	-go into knexfile.js and add database name to development connection
-		(connection: 'postgres://localhost/DATABASE NAME YOU JUST CREATED')
+##(2)```createdb db_name```
+	###### *db_name should be whatever you want.*
 
-(3)Knex migrate:make table_name
-(we will make a users table for auth)
+	go into ```knexfile.js``` and add database name to ```development``` connection
+		```
+		connection: 'postgres://localhost/DATABASE NAME YOU JUST CREATED'
+		```
+
+##(3) ```knex migrate:make users```
+*we will make a users table for auth, so name it users*
 
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('users', function(table){
@@ -79,7 +101,7 @@ exports.down = function(knex, Promise) {
 };
 
 
-(4)Knex migrate:make table_name
+##(4)Knex migrate:make table_name
 (we will make a list table for the list data)
 
 exports.up = function(knex, Promise) {
@@ -93,13 +115,13 @@ exports.down = function(knex, Promise) {
   return knex.schema.dropTableIfExists('list');
 };
 
-(5)Knex migrate:latest
+##(5)Knex migrate:latest
 Adds tables to your database
 
 SEEDING DATA
 -Add in a number so the seeds will run in order
 
-(6)Knex seed:make 0_seed_reset
+##(6)Knex seed:make 0_seed_reset
 	-go into new seed file and set up seed data
 
 exports.seed = function(knex, Promise) {
@@ -114,7 +136,7 @@ exports.seed = function(knex, Promise) {
 
 
 
-(7)Knex seed:make 1_seed_users
+##(7)Knex seed:make 1_seed_users
 -go into new seed file and set up seed data
 	-To make hashed passwords go to
 https://www.dailycred.com/article/bcrypt-calculator#
@@ -135,7 +157,7 @@ return knex(‘users’).del()
 };
 
 
-(8)Knex seed:make 2_seed_list
+##(8)Knex seed:make 2_seed_list
 -go into new seed file and set up seed data
 
 exports.seed = function(knex, Promise) {
@@ -151,27 +173,27 @@ exports.seed = function(knex, Promise) {
     });
 };
 
-(9)Knex seed:run
+##(9)Knex seed:run
 	-adds data to your table
 
-HEROKU SETUP
-(1)Git add .
+#HEROKU SETUP
+##(1)Git add .
 
-(2)Git commit -m “message”
+##(2)Git commit -m “message”
 
-(3)heroku create app-name
+##(3)heroku create app-name
 
-(4)heroku addons:create heroku-postgresql
+##(4)heroku addons:create heroku-postgresql
 
-(5)heroku config
+##(5)heroku config
   -Add url to .env
     -DATABASE_URL=heroku url
 
-(6)knex migrate:latest --env production
+##(6)knex migrate:latest --env production
 	-runs the latest migration to heroku
 
-(7)knex seed:run --env production
+##(7)knex seed:run --env production
 	-runs the latest seed to your production
 
-(8)git push heroku master
+##(8)git push heroku master
 	-push master branch to heroku
